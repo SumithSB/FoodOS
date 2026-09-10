@@ -3,7 +3,7 @@ import { saveReply } from '../data/replies.ts'
 import type { ReplySource } from '../data/replies.ts'
 import type { ReasonLink } from '../engine/types.ts'
 import { Button } from './Button.tsx'
-import { CopyIcon } from './icons.tsx'
+import { CopyIcon, WarningCircleIcon } from './icons.tsx'
 
 interface Props {
   brand: string | null
@@ -131,8 +131,12 @@ export function EnquiryDraft({ brand, undeterminedRules, onSaved }: Props) {
         checked before the next verdict.
       </p>
       {!brand && (
-        <p role="status" className="text-sm text-caution">
-          No brand is known for this product, so replies cannot be stored yet.
+        <p
+          role="status"
+          className="flex gap-2 rounded-lg border border-caution/40 bg-caution-bg p-3 text-sm text-caution"
+        >
+          <WarningCircleIcon className="mt-0.5 shrink-0" />
+          <span>No brand is known for this product, so replies cannot be stored yet.</span>
         </p>
       )}
       <ul className="space-y-3">
