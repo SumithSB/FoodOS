@@ -38,7 +38,7 @@ export function ScanView({ onBarcode, onBackendChange }: Props) {
           backend {backend}
         </p>
       </div>
-      <div className="relative overflow-hidden rounded-lg bg-foreground">
+      <div className="relative overflow-hidden rounded-lg bg-black">
         <video
           ref={videoRef}
           muted
