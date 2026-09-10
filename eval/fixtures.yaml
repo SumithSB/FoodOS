@@ -1,0 +1,41 @@
+# Eval fixtures. HUMAN-AUTHORED labels only.
+# The five entries below are PLACEHOLDERS with no `expected` value.
+# A human must label the real 100: copy this shape, paste the ingredient
+# list verbatim from packaging, and set expected to SAFE | NOT_SAFE |
+# UNDETERMINED. The AI must not write `expected` values — a self-graded
+# eval is worthless. Eval runs only against strict_indian_vegetarian.
+
+- name: "PLACEHOLDER 1 — replace with a real product"
+  barcode: null
+  ingredients: "REPLACE with the raw ingredient string, verbatim from packaging"
+  profile: strict_indian_vegetarian
+  expected: null
+  note: "PLACEHOLDER — a human must set expected and explain why."
+
+- name: "PLACEHOLDER 2 — replace with a real product"
+  barcode: null
+  ingredients: "REPLACE with the raw ingredient string, verbatim from packaging"
+  profile: strict_indian_vegetarian
+  expected: null
+  note: "PLACEHOLDER — a human must set expected and explain why."
+
+- name: "PLACEHOLDER 3 — replace with a real product"
+  barcode: null
+  ingredients: "REPLACE with the raw ingredient string, verbatim from packaging"
+  profile: strict_indian_vegetarian
+  expected: null
+  note: "PLACEHOLDER — a human must set expected and explain why."
+
+- name: "PLACEHOLDER 4 — replace with a real product"
+  barcode: null
+  ingredients: "REPLACE with the raw ingredient string, verbatim from packaging"
+  profile: strict_indian_vegetarian
+  expected: null
+  note: "PLACEHOLDER — a human must set expected and explain why."
+
+- name: "PLACEHOLDER 5 — replace with a real product"
+  barcode: null
+  ingredients: "REPLACE with the raw ingredient string, verbatim from packaging"
+  profile: strict_indian_vegetarian
+  expected: null
+  note: "PLACEHOLDER — a human must set expected and explain why."
