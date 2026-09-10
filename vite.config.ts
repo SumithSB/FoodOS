@@ -20,8 +20,8 @@ export default defineConfig({
         short_name: 'IngCheck',
         description:
           'Scan a UK packaged-food barcode and check ingredients against your dietary profile.',
-        theme_color: '#334155',
-        background_color: '#F8FAFC',
+        theme_color: '#F2F2F7',
+        background_color: '#F2F2F7',
         display: 'standalone',
         start_url: '/',
         scope: '/',

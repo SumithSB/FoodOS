@@ -7,20 +7,22 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const VARIANTS: Record<Variant, string> = {
-  primary:
-    'bg-primary text-on-primary hover:opacity-90 disabled:opacity-50',
-  secondary:
-    'border border-border bg-card text-foreground hover:bg-muted disabled:opacity-50',
-  ghost: 'text-foreground hover:bg-muted disabled:opacity-50',
-  danger: 'bg-destructive text-on-destructive hover:opacity-90 disabled:opacity-50',
+  primary: 'apple-btn apple-btn-filled',
+  secondary: 'apple-btn apple-btn-gray',
+  ghost: 'apple-btn apple-btn-plain',
+  danger: 'apple-btn apple-btn-filled',
 }
 
-/** Shared control: 44px min height, focus-visible ring, 200ms hover. */
-export function Button({ variant = 'primary', className = '', type, ...props }: Props) {
+export function Button({ variant = 'primary', className = '', type, style, ...props }: Props) {
   return (
     <button
       type={type ?? 'button'}
-      className={`inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-opacity duration-200 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed ${VARIANTS[variant]} ${className}`}
+      className={`${VARIANTS[variant]} ${className}`}
+      style={
+        variant === 'danger'
+          ? { background: 'var(--apple-red)', color: '#fff', ...style }
+          : style
+      }
       {...props}
     />
   )

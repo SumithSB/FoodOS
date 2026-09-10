@@ -12,6 +12,7 @@ import { EnquiryDraft } from './ui/EnquiryDraft.tsx'
 import { BarcodeIcon, ClipboardIcon } from './ui/icons.tsx'
 import { ProfilePicker } from './ui/ProfilePicker.tsx'
 import { ScanView } from './ui/ScanView.tsx'
+import { SegmentedControl } from './ui/SegmentedControl.tsx'
 import { VerdictView } from './ui/VerdictView.tsx'
 
 const RULES = loadIngredientRules()
@@ -20,6 +21,7 @@ const PROFILES = loadProfiles()
 export default function App() {
   const s = useAppStore()
   const [pasted, setPasted] = useState('')
+  const [mode, setMode] = useState<'scan' | 'type'>('scan')
 
   const profile = useMemo(() => getProfile(PROFILES, s.profileId), [s.profileId])
   const hasInput = s.product !== null || s.ingredientText.trim().length > 0
@@ -44,7 +46,6 @@ export default function App() {
     void replyStatusOverrides(s.product?.brand ?? null, tokens).then((o) => {
       s.setReplyOverrides(o)
     })
-    // Store actions are stable; product brand + tokens are the inputs.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasInput, s.ingredientText, s.product?.brand, s.overrides, s.repliesVersion])
 
@@ -86,22 +87,28 @@ export default function App() {
   }
 
   return (
-    <div className="mx-auto min-h-svh max-w-2xl px-4 pb-20 pt-[max(1rem,env(safe-area-inset-top))]">
-      <header className="sticky top-0 z-10 -mx-4 mb-6 border-b border-border bg-background/95 px-4 py-3 backdrop-blur">
-        <p className="font-mono text-[11px] tracking-[0.18em] text-muted-foreground uppercase">
-          Instrument
+    <div className="mx-auto min-h-svh max-w-[430px] pb-[max(2rem,env(safe-area-inset-bottom))]">
+      <header className="apple-nav">
+        <p className="apple-caption">Ingredient Check</p>
+        <h1>Check</h1>
+        <p className="apple-caption mt-1 max-w-prose">
+          Scan a UK barcode. When in doubt the answer is undetermined.
         </p>
-        <h1 className="font-heading text-2xl font-semibold text-foreground">ingredient-check</h1>
-        <p className="mt-1 max-w-prose text-sm text-muted-foreground">
-          Scan a UK packaged-food barcode and check it against your dietary
-          profile. When in doubt the answer is undetermined.
-        </p>
+        <div className="mt-3">
+          <SegmentedControl
+            ariaLabel="Input method"
+            value={mode}
+            onChange={(id) => setMode(id as 'scan' | 'type')}
+            options={[
+              { id: 'scan', label: 'Scan' },
+              { id: 'type', label: 'Type' },
+            ]}
+          />
+        </div>
       </header>
 
-      <div className="space-y-5">
-        <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
-          <ProfilePicker profiles={PROFILES} value={s.profileId} onChange={s.setProfileId} />
-        </div>
+      <main className="space-y-6 px-4 pt-4">
+        <ProfilePicker profiles={PROFILES} value={s.profileId} onChange={s.setProfileId} />
 
         <VerdictView
           verdict={verdict}
@@ -110,84 +117,77 @@ export default function App() {
           onResolve={(token) => void handleResolve(token)}
         />
 
-        <ScanView onBarcode={(code) => void lookup(code)} onBackendChange={s.setScannerBackend} />
-
-        <section
-          aria-label="Manual entry"
-          className="space-y-4 rounded-xl border border-border bg-card p-4 shadow-sm"
-        >
-          <h2 className="font-heading text-base font-semibold text-card-foreground">
-            Enter without a camera
-          </h2>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault()
-              void lookup(s.barcodeInput)
-            }}
-            className="space-y-2"
-          >
-            <label htmlFor="barcode" className="block text-sm font-semibold">
-              Barcode
-            </label>
-            <div className="flex flex-col gap-2 sm:flex-row">
-              <input
-                id="barcode"
-                type="text"
-                inputMode="numeric"
-                autoComplete="off"
-                placeholder="5000168001142"
-                value={s.barcodeInput}
-                onChange={(e) => s.setBarcodeInput(e.target.value)}
-                className="min-h-11 min-w-0 flex-1 rounded-lg border border-border bg-background px-3 font-mono text-sm"
-              />
-              <Button type="submit" disabled={s.lookupState === 'loading'}>
-                <BarcodeIcon />
-                {s.lookupState === 'loading' ? 'Looking up…' : 'Look up'}
-              </Button>
-            </div>
-          </form>
-          <div className="space-y-2">
-            <label htmlFor="paste" className="block text-sm font-semibold">
-              Ingredient list
-            </label>
-            <textarea
-              id="paste"
-              rows={3}
-              value={pasted}
-              onChange={(e) => setPasted(e.target.value)}
-              placeholder="Ingredients: wheat flour, water, salt…"
-              className="w-full rounded-lg border border-border bg-background p-3 text-sm"
-            />
-            <div className="flex flex-wrap gap-2">
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  s.resetResult()
-                  s.setIngredientText(pasted)
+        {mode === 'scan' ? (
+          <ScanView onBarcode={(code) => void lookup(code)} onBackendChange={s.setScannerBackend} />
+        ) : (
+          <section aria-label="Manual entry">
+            <p className="apple-section-label">Type</p>
+            <div className="apple-group">
+              <form
+                className="apple-group-pad space-y-3"
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  void lookup(s.barcodeInput)
                 }}
               >
-                <ClipboardIcon />
-                Check pasted list
-              </Button>
-              {(s.product || s.ingredientText) && (
+                <label htmlFor="barcode" className="apple-caption block">
+                  Barcode
+                </label>
+                <input
+                  id="barcode"
+                  type="text"
+                  inputMode="numeric"
+                  autoComplete="off"
+                  placeholder="5000168001142"
+                  value={s.barcodeInput}
+                  onChange={(e) => s.setBarcodeInput(e.target.value)}
+                  className="apple-field apple-field-mono"
+                />
+                <Button type="submit" disabled={s.lookupState === 'loading'}>
+                  <BarcodeIcon color="#fff" />
+                  {s.lookupState === 'loading' ? 'Looking Up…' : 'Look Up'}
+                </Button>
+                <label htmlFor="paste" className="apple-caption block">
+                  Ingredient list
+                </label>
+                <textarea
+                  id="paste"
+                  rows={4}
+                  value={pasted}
+                  onChange={(e) => setPasted(e.target.value)}
+                  placeholder="Ingredients: wheat flour, water, salt…"
+                  className="apple-field min-h-[96px]"
+                />
                 <Button
-                  variant="ghost"
+                  variant="secondary"
                   onClick={() => {
                     s.resetResult()
-                    setPasted('')
+                    s.setIngredientText(pasted)
                   }}
                 >
-                  Clear
+                  <ClipboardIcon />
+                  Check List
                 </Button>
-              )}
+                {(s.product || s.ingredientText) && (
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      s.resetResult()
+                      setPasted('')
+                    }}
+                  >
+                    Clear
+                  </Button>
+                )}
+                {s.lookupState === 'error' && (
+                  <p role="alert" className="text-[15px] text-[color:var(--apple-red)]">
+                    {s.lookupError}
+                  </p>
+                )}
+              </form>
             </div>
-          </div>
-          {s.lookupState === 'error' && (
-            <p role="alert" className="text-sm text-destructive">
-              {s.lookupError}
-            </p>
-          )}
-        </section>
+          </section>
+        )}
 
         {verdict && verdict.kind === 'UNDETERMINED' && (
           <EnquiryDraft
@@ -197,11 +197,11 @@ export default function App() {
           />
         )}
 
-        <footer className="rounded-lg border border-dashed border-border px-3 py-2 font-mono text-xs text-muted-foreground">
-          debug scanner={s.scannerBackend} lookup={s.lookupState} rules={RULES.length}{' '}
-          profiles={PROFILES.length} overrides={Object.keys(s.overrides).length}
-        </footer>
-      </div>
+        <p className="apple-caption px-1 font-mono">
+          scanner={s.scannerBackend} lookup={s.lookupState} rules={RULES.length} profiles=
+          {PROFILES.length}
+        </p>
+      </main>
     </div>
   )
 }

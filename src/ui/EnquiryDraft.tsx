@@ -21,14 +21,17 @@ function draftText(brand: string | null, ruleName: string | null): string {
   )
 }
 
-interface RowProps {
+function ReplyRow({
+  brand,
+  ruleId,
+  ruleName,
+  onSaved,
+}: {
   brand: string | null
   ruleId: string
   ruleName: string | null
   onSaved: () => void
-}
-
-function ReplyRow({ brand, ruleId, ruleName, onSaved }: RowProps) {
+}) {
   const [source, setSource] = useState<ReplySource>('unclear')
   const [note, setNote] = useState('')
   const [done, setDone] = useState(false)
@@ -52,61 +55,54 @@ function ReplyRow({ brand, ruleId, ruleName, onSaved }: RowProps) {
   }
 
   const options: Array<{ value: ReplySource; label: string }> = [
-    { value: 'plant', label: 'Plant-derived' },
-    { value: 'animal', label: 'Animal-derived' },
+    { value: 'plant', label: 'Plant' },
+    { value: 'animal', label: 'Animal' },
     { value: 'unclear', label: 'Unclear' },
   ]
 
   return (
-    <li className="space-y-3 rounded-lg border border-border p-3">
-      <pre className="whitespace-pre-wrap font-sans text-sm text-card-foreground">{draft}</pre>
+    <li className="apple-group-pad space-y-3">
+      <pre className="whitespace-pre-wrap font-[var(--apple-font-sans)] text-[15px] leading-5">
+        {draft}
+      </pre>
       <Button variant="secondary" onClick={() => void handleCopy()}>
         <CopyIcon />
-        {copied ? 'Copied' : 'Copy enquiry'}
+        {copied ? 'Copied' : 'Copy Enquiry'}
       </Button>
-      <fieldset className="space-y-2">
-        <legend className="text-sm font-semibold text-card-foreground">
-          Manufacturer reply for {ruleName ?? ruleId}
-        </legend>
-        <div className="flex flex-wrap gap-2">
+      <fieldset>
+        <legend className="apple-caption mb-2">Reply for {ruleName ?? ruleId}</legend>
+        <div className="apple-segmented !grid-cols-3">
           {options.map((opt) => (
-            <label
+            <button
               key={opt.value}
-              className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border border-border px-3 text-sm"
+              type="button"
+              className="apple-segment"
+              aria-pressed={source === opt.value}
+              onClick={() => setSource(opt.value)}
             >
-              <input
-                type="radio"
-                name={`source-${ruleId}`}
-                checked={source === opt.value}
-                onChange={() => setSource(opt.value)}
-              />
               {opt.label}
-            </label>
+            </button>
           ))}
         </div>
       </fieldset>
-      <div className="space-y-1">
-        <label htmlFor={`note-${ruleId}`} className="text-sm font-semibold">
-          Reply note
-        </label>
-        <input
-          id={`note-${ruleId}`}
-          type="text"
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-          className="min-h-11 w-full rounded-lg border border-border bg-card px-3 text-sm"
-        />
-      </div>
-      <div className="flex flex-wrap items-center gap-2">
-        <Button disabled={!brand} onClick={() => void handleSave()}>
-          Save reply
-        </Button>
-        {done && (
-          <span role="status" className="text-sm text-accent">
-            Saved — verdict updated.
-          </span>
-        )}
-      </div>
+      <label htmlFor={`note-${ruleId}`} className="apple-caption block">
+        Reply note
+      </label>
+      <input
+        id={`note-${ruleId}`}
+        type="text"
+        value={note}
+        onChange={(e) => setNote(e.target.value)}
+        className="apple-field"
+      />
+      <Button disabled={!brand} onClick={() => void handleSave()}>
+        Save Reply
+      </Button>
+      {done && (
+        <p role="status" className="text-[15px] text-[color:var(--apple-green)]">
+          Saved — verdict updated.
+        </p>
+      )}
     </li>
   )
 }
@@ -118,38 +114,33 @@ export function EnquiryDraft({ brand, undeterminedRules, onSaved }: Props) {
   if (withRule.length === 0) return null
 
   return (
-    <section
-      aria-label="Manufacturer enquiries"
-      className="space-y-3 rounded-xl border border-border bg-card p-4 shadow-sm"
-    >
-      <h2 className="font-heading text-base font-semibold text-card-foreground">
-        Ask the manufacturer
-      </h2>
-      <p className="text-sm text-muted-foreground">
-        For undetermined ingredients, send an enquiry naming the specific
-        ingredient. Replies are stored locally under brand + ingredient and
-        checked before the next verdict.
-      </p>
-      {!brand && (
-        <p
-          role="status"
-          className="flex gap-2 rounded-lg border border-caution/40 bg-caution-bg p-3 text-sm text-caution"
-        >
-          <WarningCircleIcon className="mt-0.5 shrink-0" />
-          <span>No brand is known for this product, so replies cannot be stored yet.</span>
-        </p>
-      )}
-      <ul className="space-y-3">
-        {withRule.map((reason) => (
-          <ReplyRow
-            key={reason.ruleId ?? reason.token}
-            brand={brand}
-            ruleId={reason.ruleId ?? ''}
-            ruleName={reason.ruleName}
-            onSaved={onSaved}
-          />
-        ))}
-      </ul>
+    <section aria-label="Manufacturer enquiries">
+      <p className="apple-section-label">Manufacturer</p>
+      <div className="apple-group">
+        <div className="apple-group-pad">
+          <p className="apple-caption">
+            For undetermined ingredients, send an enquiry naming the specific ingredient.
+            Replies are stored locally under brand + ingredient.
+          </p>
+        </div>
+        {!brand && (
+          <p role="status" className="apple-alert mx-4 mb-4">
+            <WarningCircleIcon className="mt-0.5 shrink-0" color="var(--apple-orange)" />
+            <span>No brand is known, so replies cannot be stored yet.</span>
+          </p>
+        )}
+        <ul>
+          {withRule.map((reason) => (
+            <ReplyRow
+              key={reason.ruleId ?? reason.token}
+              brand={brand}
+              ruleId={reason.ruleId ?? ''}
+              ruleName={reason.ruleName}
+              onSaved={onSaved}
+            />
+          ))}
+        </ul>
+      </div>
     </section>
   )
 }
