@@ -30,6 +30,15 @@ export function ProfileSheet({ open, profiles, value, onChange, onClose }: Sheet
 
   return (
     <Sheet open={open} title="Dietary profile" onClose={onClose}>
+      {selected && !selected.validated && (
+        <p role="alert" className="apple-alert mb-3">
+          <WarningCircleIcon className="mt-0.5 shrink-0" color="var(--apple-orange)" />
+          <span>
+            Results under “{selected.label}” are experimental — only Strict Indian vegetarian is
+            validated.
+          </span>
+        </p>
+      )}
       <div role="listbox" aria-label="Dietary profile">
         {profiles.map((profile) => {
           const selectedRow = profile.id === value
@@ -40,10 +49,7 @@ export function ProfileSheet({ open, profiles, value, onChange, onClose }: Sheet
               role="option"
               aria-selected={selectedRow}
               className="ic-profile-row"
-              onClick={() => {
-                onChange(profile.id)
-                onClose()
-              }}
+              onClick={() => onChange(profile.id)}
             >
               <span>
                 <span className="block text-[17px] font-semibold tracking-[-0.012em]">
@@ -58,15 +64,6 @@ export function ProfileSheet({ open, profiles, value, onChange, onClose }: Sheet
           )
         })}
       </div>
-      {selected && !selected.validated && (
-        <p role="alert" className="apple-alert mt-4">
-          <WarningCircleIcon className="mt-0.5 shrink-0" color="var(--apple-orange)" />
-          <span>
-            Results under “{selected.label}” are experimental — only Strict Indian vegetarian is
-            validated.
-          </span>
-        </p>
-      )}
       {selected?.note && <p className="apple-caption mt-3">{selected.note}</p>}
     </Sheet>
   )
