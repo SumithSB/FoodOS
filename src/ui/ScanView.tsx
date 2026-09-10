@@ -65,7 +65,9 @@ export function ScanView({ paused, lookingUp, lookupError, onBarcode, onBackendC
         <span className="ic-corner ic-corner-tr" />
         <span className="ic-corner ic-corner-bl" />
         <span className="ic-corner ic-corner-br" />
-        {scanning && !lookingUp && <span className="ic-scanline" />}
+        {!lookingUp && (
+          <span className={`ic-scanline${scanning ? '' : ' ic-scanline-idle'}`} />
+        )}
       </div>
 
       {lookingUp && (

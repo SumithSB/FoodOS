@@ -93,13 +93,13 @@ export default function App() {
     setSheet('none')
   }
 
-  const cameraPaused = sheet !== 'none' || verdict !== null
+  const sheetOpen = sheet !== 'none' || verdict !== null
   const selectedLabel = profile.label
 
   return (
-    <div className="ic-app">
+    <div className={`ic-app${sheetOpen ? ' ic-app-sheet' : ''}`}>
       <ScanView
-        paused={cameraPaused}
+        paused={sheetOpen}
         lookingUp={s.lookupState === 'loading'}
         lookupError={verdict ? null : s.lookupError}
         onBarcode={(code) => void lookup(code)}
