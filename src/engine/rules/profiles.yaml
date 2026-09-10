@@ -1,0 +1,48 @@
+# Dietary profiles. Profiles are data: each declares which ingredient
+# statuses reject, which force undetermined, and optional extra rule ids.
+# Only strict_indian_vegetarian is validated. Every other profile carries
+# validated: false and the UI must show an "unvalidated profile" banner.
+
+- id: strict_indian_vegetarian
+  label: "Strict Indian vegetarian"
+  validated: true
+  reject: [always_animal, egg, fermented_dairy]
+  undetermined: [ambiguous]
+  note: "Allows dairy (including fermented dairy is rejected; plain dairy allowed). Animal rennet rejects via always_animal; unspecified rennet is undetermined via ambiguous."
+
+- id: vegetarian_uk
+  label: "Vegetarian (UK)"
+  validated: false
+  reject: [always_animal]
+  undetermined: [ambiguous]
+  note: "Unvalidated: allows dairy, egg and fermented dairy. Ambiguous additives stay undetermined."
+
+- id: vegan
+  label: "Vegan"
+  validated: false
+  reject: [always_animal, dairy, egg, fermented_dairy]
+  undetermined: [ambiguous]
+  note: "Unvalidated: rejects all animal-derived statuses; ambiguous stays undetermined."
+
+- id: jain
+  label: "Jain"
+  validated: false
+  reject: [always_animal, egg, root_vegetable, allium]
+  undetermined: [ambiguous, fermented_dairy]
+  note: "Unvalidated: rejects root vegetables and alliums; fermented dairy is undetermined, plain dairy allowed."
+
+- id: no_beef
+  label: "No beef"
+  validated: false
+  reject: []
+  reject_ids: [beef]
+  undetermined: [ambiguous, always_animal]
+  note: "Unvalidated: only beef-derived rules reject. Other animal-derived ingredients are undetermined rather than assumed beef-free."
+
+- id: no_pork
+  label: "No pork"
+  validated: false
+  reject: []
+  reject_ids: [pork, lard]
+  undetermined: [ambiguous, always_animal]
+  note: "Unvalidated: only pork-derived rules reject. Other animal-derived ingredients are undetermined rather than assumed pork-free."

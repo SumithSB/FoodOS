@@ -1,0 +1,420 @@
+# Knowledge base: ingredient -> source status.
+# Statuses: always_animal | always_plant | ambiguous | dairy | egg |
+#           fermented_dairy | root_vegetable | allium
+# Rule: never guess. If a fact cannot be verified, status is `ambiguous`.
+# E-number references point at the stable E-number list; named ingredients
+# point at their stable reference article.
+
+- id: gelatin
+  names: ["E441", "gelatin", "gelatine", "beef gelatin", "beef gelatine"]
+  status: always_animal
+  reason: "Gelatin is produced by partial hydrolysis of animal collagen (bones, skin, connective tissue)."
+  source_url: "https://en.wikipedia.org/wiki/Gelatine"
+
+- id: carmine
+  names: ["E120", "carmine", "cochineal", "cochineal extract", "carminic acid", "natural red 4"]
+  status: always_animal
+  reason: "Carmine is extracted from cochineal scale insects."
+  source_url: "https://en.wikipedia.org/wiki/Carmine"
+
+- id: shellac
+  names: ["E904", "shellac", "confectioner's glaze", "confectioners glaze", "resinous glaze"]
+  status: always_animal
+  reason: "Shellac is secreted by lac insects and used as a confectionery glaze."
+  source_url: "https://en.wikipedia.org/wiki/Shellac"
+
+- id: lard
+  names: ["lard", "pork lard", "rendered pork fat"]
+  status: always_animal
+  reason: "Lard is rendered pig fat."
+  source_url: "https://en.wikipedia.org/wiki/Lard"
+
+- id: tallow
+  names: ["tallow", "beef tallow", "rendered beef fat", "dripping", "beef dripping"]
+  status: always_animal
+  reason: "Tallow is rendered beef or mutton fat."
+  source_url: "https://en.wikipedia.org/wiki/Tallow"
+
+- id: suet
+  names: ["suet", "beef suet"]
+  status: always_animal
+  reason: "Suet is raw hard fat from around beef or mutton kidneys."
+  source_url: "https://en.wikipedia.org/wiki/Suet"
+
+- id: isinglass
+  names: ["isinglass", "fish gelatin", "fish gelatine"]
+  status: always_animal
+  reason: "Isinglass is obtained from dried fish swim bladders."
+  source_url: "https://en.wikipedia.org/wiki/Isinglass"
+
+- id: animal_rennet
+  names: ["animal rennet", "calf rennet", "calves rennet", "traditional rennet"]
+  status: always_animal
+  reason: "Animal rennet is a complex of enzymes from calf stomachs."
+  source_url: "https://en.wikipedia.org/wiki/Rennet"
+
+- id: anchovy
+  names: ["anchovy", "anchovies", "anchovy paste"]
+  status: always_animal
+  reason: "Anchovies are fish."
+  source_url: "https://en.wikipedia.org/wiki/Anchovy"
+
+- id: fish_sauce
+  names: ["fish sauce", "nam pla", "nuoc mam"]
+  status: always_animal
+  reason: "Fish sauce is made from fermented fish."
+  source_url: "https://en.wikipedia.org/wiki/Fish_sauce"
+
+- id: worcestershire_sauce
+  names: ["worcestershire sauce", "worcester sauce"]
+  status: always_animal
+  reason: "Worcestershire sauce contains anchovies."
+  source_url: "https://en.wikipedia.org/wiki/Worcestershire_sauce"
+
+- id: bone_phosphate
+  names: ["E542", "bone phosphate", "edible bone phosphate"]
+  status: always_animal
+  reason: "E542 is manufactured from animal bones."
+  source_url: "https://en.wikipedia.org/wiki/E_number"
+
+- id: beef
+  names: ["beef", "beef extract", "beef stock", "beef powder", "dried beef"]
+  status: always_animal
+  reason: "Beef is cattle meat."
+  source_url: "https://en.wikipedia.org/wiki/Beef"
+
+- id: pork
+  names: ["pork", "bacon", "ham", "pork fat", "pork extract", "gammon", "prosciutto", "salami", "pepperoni", "chorizo"]
+  status: always_animal
+  reason: "Pork and cured pork products are pig meat."
+  source_url: "https://en.wikipedia.org/wiki/Pork"
+
+- id: chicken
+  names: ["chicken", "chicken fat", "chicken extract", "chicken stock", "chicken powder"]
+  status: always_animal
+  reason: "Chicken is poultry meat."
+  source_url: "https://en.wikipedia.org/wiki/Chicken_as_food"
+
+- id: meat_unspecified
+  names: ["meat", "meat extract", "meat stock", "meat powder"]
+  status: always_animal
+  reason: "Unspecified meat is animal flesh; the species is not disclosed but it is animal-derived."
+  source_url: "https://en.wikipedia.org/wiki/Meat"
+
+- id: e471
+  names: ["E471", "mono- and diglycerides of fatty acids", "mono and diglycerides", "mono- and di-glycerides", "monoglycerides", "diglycerides"]
+  status: ambiguous
+  reason: "Can be derived from plant oils or animal fats. UK labels are not required to disclose the source."
+  source_url: "https://en.wikipedia.org/wiki/E_number"
+
+- id: e472
+  names: ["E472", "E472a", "E472b", "E472c", "E472d", "E472e", "E472f", "acetic acid esters of mono- and diglycerides", "lactic acid esters of mono- and diglycerides", "citric acid esters of mono- and diglycerides", "tartaric acid esters of mono- and diglycerides", "mono- and diacetyl tartaric acid esters", "mixed acetic and tartaric acid esters"]
+  status: ambiguous
+  reason: "E472a-f are esters of mono- and diglycerides; the underlying fats can be plant or animal. UK labels are not required to disclose the source."
+  source_url: "https://en.wikipedia.org/wiki/E_number"
+
+- id: e422
+  names: ["E422", "glycerol", "glycerin", "glycerine", "vegetable glycerin", "vegetable glycerine"]
+  status: ambiguous
+  reason: "Glycerol can come from plant oils, animal fats, or synthesis. 'Vegetable glycerin' claims are not verified from the ingredient line alone."
+  source_url: "https://en.wikipedia.org/wiki/Glycerol"
+
+- id: e570
+  names: ["E570", "stearic acid", "fatty acids"]
+  status: ambiguous
+  reason: "Stearic acid and generic 'fatty acids' can be plant or animal derived. UK labels are not required to disclose the source."
+  source_url: "https://en.wikipedia.org/wiki/Stearic_acid"
+
+- id: e572
+  names: ["E572", "magnesium stearate"]
+  status: ambiguous
+  reason: "Magnesium stearate is the magnesium salt of stearic acid, which can be plant or animal derived."
+  source_url: "https://en.wikipedia.org/wiki/Magnesium_stearate"
+
+- id: e920
+  names: ["E920", "L-cysteine", "cysteine", "cystine"]
+  status: ambiguous
+  reason: "L-cysteine can be derived from animal hair or feathers, or produced by fermentation. UK labels are not required to disclose the source."
+  source_url: "https://en.wikipedia.org/wiki/Cysteine"
+
+- id: e631
+  names: ["E631", "disodium inosinate", "sodium inosinate", "inosinate"]
+  status: ambiguous
+  reason: "Disodium inosinate can be made from meat or fish extract, or by fermentation. UK labels are not required to disclose the source."
+  source_url: "https://en.wikipedia.org/wiki/Inosinic_acid"
+
+- id: e627
+  names: ["E627", "disodium guanylate", "sodium guanylate", "guanylate"]
+  status: ambiguous
+  reason: "Disodium guanylate can be made from fish or seaweed, or by fermentation. UK labels are not required to disclose the source."
+  source_url: "https://en.wikipedia.org/wiki/Guanylic_acid"
+
+- id: e635
+  names: ["E635", "disodium 5'-ribonucleotides", "ribonucleotides"]
+  status: ambiguous
+  reason: "E635 is a blend of inosinate and guanylate, which can be animal-derived or fermentation-derived."
+  source_url: "https://en.wikipedia.org/wiki/E_number"
+
+- id: polysorbate
+  names: ["E430", "E431", "E432", "E433", "E434", "E435", "E436", "polysorbate", "polysorbates", "polysorbate 20", "polysorbate 40", "polysorbate 60", "polysorbate 65", "polysorbate 80", "polyoxyethylene sorbitan"]
+  status: ambiguous
+  reason: "Polysorbates are ethoxylated sorbitan esters of fatty acids, which can be plant or animal derived."
+  source_url: "https://en.wikipedia.org/wiki/Polysorbate_80"
+
+- id: e322
+  names: ["E322", "lecithin", "soya lecithin", "soy lecithin", "sunflower lecithin"]
+  status: ambiguous
+  reason: "Lecithin is most often from soya or sunflower but can be from egg yolk; the label qualifier is not always trustworthy without verification."
+  source_url: "https://en.wikipedia.org/wiki/Lecithin"
+
+- id: natural_flavouring
+  names: ["natural flavourings", "natural flavorings", "natural flavouring", "natural flavoring", "flavouring", "flavoring", "flavourings", "flavorings", "aroma", "natural aroma"]
+  status: ambiguous
+  reason: "'Flavouring' covers many substances and can include animal-derived carriers or components not individually declared."
+  source_url: "https://en.wikipedia.org/wiki/E_number"
+
+- id: vitamin_d3
+  names: ["vitamin D3", "vitamin D", "cholecalciferol", "colecalciferol"]
+  status: ambiguous
+  reason: "Vitamin D3 is usually from lanolin (sheep wool) but can be from lichen or algae. The label does not disclose the source."
+  source_url: "https://en.wikipedia.org/wiki/Cholecalciferol"
+
+- id: omega_3
+  names: ["omega-3", "omega 3", "fish oil", "algal oil", "algae oil", "DHA", "EPA"]
+  status: ambiguous
+  reason: "Omega-3 can come from fish oil or algae; the label rarely pins the origin to a verifiable source."
+  source_url: "https://en.wikipedia.org/wiki/Omega-3_fatty_acid"
+
+- id: rennet
+  names: ["rennet", "coagulant", "microbial coagulant"]
+  status: ambiguous
+  reason: "Unspecified rennet can be animal, microbial, or fermentation-produced chymosin. UK labels are not required to disclose which."
+  source_url: "https://en.wikipedia.org/wiki/Rennet"
+
+- id: vegetarian_rennet
+  names: ["vegetarian rennet", "microbial rennet", "fermentation-produced chymosin"]
+  status: always_plant
+  reason: "Rennet explicitly declared microbial or fermentation-produced contains no animal-derived coagulant."
+  source_url: "https://en.wikipedia.org/wiki/Rennet"
+
+- id: cheese
+  names: ["cheese", "cheddar", "mozzarella", "parmesan", "parmigiano", "stilton", "brie", "paneer", "cheese powder", "dried cheese"]
+  status: ambiguous
+  reason: "Cheese may be set with animal rennet; unspecific cheese declarations do not disclose the coagulant."
+  source_url: "https://en.wikipedia.org/wiki/Cheese"
+
+- id: egg
+  names: ["egg", "eggs", "whole egg", "dried egg"]
+  status: egg
+  reason: "Egg is egg."
+  source_url: "https://en.wikipedia.org/wiki/Egg_as_food"
+
+- id: egg_white
+  names: ["egg white", "egg whites"]
+  status: egg
+  reason: "Egg white is egg."
+  source_url: "https://en.wikipedia.org/wiki/Egg_white"
+
+- id: egg_yolk
+  names: ["egg yolk", "egg yolks", "yolk"]
+  status: egg
+  reason: "Egg yolk is egg."
+  source_url: "https://en.wikipedia.org/wiki/Yolk"
+
+- id: albumen
+  names: ["albumen", "egg albumen"]
+  status: egg
+  reason: "Albumen is egg white protein."
+  source_url: "https://en.wikipedia.org/wiki/Egg_white"
+
+- id: ovalbumin
+  names: ["ovalbumin"]
+  status: egg
+  reason: "Ovalbumin is the main protein of egg white."
+  source_url: "https://en.wikipedia.org/wiki/Ovalbumin"
+
+- id: egg_powder
+  names: ["egg powder", "egg white powder", "egg yolk powder", "dried egg white", "dried egg yolk"]
+  status: egg
+  reason: "Dried egg powders are egg."
+  source_url: "https://en.wikipedia.org/wiki/Egg_as_food"
+
+- id: lysozyme
+  names: ["E1105", "lysozyme", "egg lysozyme"]
+  status: egg
+  reason: "Food-grade lysozyme (E1105) is extracted from hen egg white."
+  source_url: "https://en.wikipedia.org/wiki/Lysozyme"
+
+- id: egg_lecithin
+  names: ["egg lecithin"]
+  status: egg
+  reason: "Egg lecithin is extracted from egg yolk."
+  source_url: "https://en.wikipedia.org/wiki/Lecithin"
+
+- id: yoghurt
+  names: ["yoghurt", "yogurt", "yoghurt powder", "yogurt powder"]
+  status: fermented_dairy
+  reason: "Yoghurt is fermented milk."
+  source_url: "https://en.wikipedia.org/wiki/Yogurt"
+
+- id: curd
+  names: ["curd", "curds"]
+  status: fermented_dairy
+  reason: "Curd is a fermented milk product."
+  source_url: "https://en.wikipedia.org/wiki/Curd"
+
+- id: dahi
+  names: ["dahi"]
+  status: fermented_dairy
+  reason: "Dahi is a fermented milk product of the Indian subcontinent."
+  source_url: "https://en.wikipedia.org/wiki/Dahi"
+
+- id: buttermilk
+  names: ["buttermilk"]
+  status: fermented_dairy
+  reason: "Buttermilk is a fermented milk drink."
+  source_url: "https://en.wikipedia.org/wiki/Buttermilk"
+
+- id: kefir
+  names: ["kefir", "kefir powder"]
+  status: fermented_dairy
+  reason: "Kefir is a fermented milk drink."
+  source_url: "https://en.wikipedia.org/wiki/Kefir"
+
+- id: milk
+  names: ["milk", "skimmed milk", "semi-skimmed milk", "whole milk", "semi skimmed milk", "cows milk", "cow's milk"]
+  status: dairy
+  reason: "Milk is dairy."
+  source_url: "https://en.wikipedia.org/wiki/Milk"
+
+- id: milk_powder
+  names: ["milk powder", "dried milk", "skimmed milk powder", "dried skimmed milk"]
+  status: dairy
+  reason: "Milk powder is dried milk."
+  source_url: "https://en.wikipedia.org/wiki/Powdered_milk"
+
+- id: cream
+  names: ["cream", "double cream", "single cream", "whipping cream", "soured cream", "sour cream"]
+  status: dairy
+  reason: "Cream is dairy."
+  source_url: "https://en.wikipedia.org/wiki/Cream"
+
+- id: butter
+  names: ["butter", "butteroil", "butter oil"]
+  status: dairy
+  reason: "Butter is dairy."
+  source_url: "https://en.wikipedia.org/wiki/Butter"
+
+- id: ghee
+  names: ["ghee", "clarified butter"]
+  status: dairy
+  reason: "Ghee is clarified butter, i.e. dairy."
+  source_url: "https://en.wikipedia.org/wiki/Ghee"
+
+- id: whey
+  names: ["whey", "whey powder", "whey protein", "whey protein concentrate", "sweet whey"]
+  status: dairy
+  reason: "Whey is the liquid remaining after milk is curdled; it is dairy."
+  source_url: "https://en.wikipedia.org/wiki/Whey"
+
+- id: casein
+  names: ["casein", "caseinate", "sodium caseinate", "calcium caseinate", "caseinates"]
+  status: dairy
+  reason: "Casein is milk protein."
+  source_url: "https://en.wikipedia.org/wiki/Casein"
+
+- id: lactose
+  names: ["lactose", "milk sugar"]
+  status: dairy
+  reason: "Lactose is the sugar in milk."
+  source_url: "https://en.wikipedia.org/wiki/Lactose"
+
+- id: onion
+  names: ["onion", "onions", "spring onion", "spring onions", "red onion", "onion powder", "dehydrated onion"]
+  status: allium
+  reason: "Onion is an allium; relevant to the Jain profile."
+  source_url: "https://en.wikipedia.org/wiki/Onion"
+
+- id: garlic
+  names: ["garlic", "garlic powder", "dehydrated garlic"]
+  status: allium
+  reason: "Garlic is an allium; relevant to the Jain profile."
+  source_url: "https://en.wikipedia.org/wiki/Garlic"
+
+- id: shallot
+  names: ["shallot", "shallots"]
+  status: allium
+  reason: "Shallot is an allium; relevant to the Jain profile."
+  source_url: "https://en.wikipedia.org/wiki/Shallot"
+
+- id: leek
+  names: ["leek", "leeks"]
+  status: allium
+  reason: "Leek is an allium; relevant to the Jain profile."
+  source_url: "https://en.wikipedia.org/wiki/Leek"
+
+- id: asafoetida
+  names: ["asafoetida", "hing", "asafoetida powder"]
+  status: allium
+  reason: "Asafoetida is used as an allium substitute and tracked for the Jain profile."
+  source_url: "https://en.wikipedia.org/wiki/Asafoetida"
+
+- id: potato
+  names: ["potato", "potatoes", "potato starch", "potato flour"]
+  status: root_vegetable
+  reason: "Potato is a root vegetable; relevant to the Jain profile."
+  source_url: "https://en.wikipedia.org/wiki/Potato"
+
+- id: carrot
+  names: ["carrot", "carrots"]
+  status: root_vegetable
+  reason: "Carrot is a root vegetable; relevant to the Jain profile."
+  source_url: "https://en.wikipedia.org/wiki/Carrot"
+
+- id: beetroot
+  names: ["beetroot", "beet", "beets"]
+  status: root_vegetable
+  reason: "Beetroot is a root vegetable; relevant to the Jain profile."
+  source_url: "https://en.wikipedia.org/wiki/Beetroot"
+
+- id: ginger
+  names: ["ginger", "ground ginger", "ginger powder"]
+  status: root_vegetable
+  reason: "Ginger is an underground rhizome; tracked as root for the Jain profile."
+  source_url: "https://en.wikipedia.org/wiki/Ginger"
+
+- id: turmeric
+  names: ["turmeric", "ground turmeric"]
+  status: root_vegetable
+  reason: "Turmeric is an underground rhizome; tracked as root for the Jain profile."
+  source_url: "https://en.wikipedia.org/wiki/Turmeric"
+
+- id: water
+  names: ["water"]
+  status: always_plant
+  reason: "Water is not animal-derived."
+  source_url: "https://en.wikipedia.org/wiki/Water"
+
+- id: salt
+  names: ["salt", "sea salt", "table salt"]
+  status: always_plant
+  reason: "Salt is a mineral; not animal-derived."
+  source_url: "https://en.wikipedia.org/wiki/Salt"
+
+- id: wheat_flour
+  names: ["wheat flour", "flour", "wheat", "whole wheat flour", "wholemeal flour", "maida", "atta"]
+  status: always_plant
+  reason: "Wheat flour is milled grain; not animal-derived."
+  source_url: "https://en.wikipedia.org/wiki/Wheat_flour"
+
+- id: rice
+  names: ["rice", "rice flour", "basmati rice"]
+  status: always_plant
+  reason: "Rice is grain; not animal-derived."
+  source_url: "https://en.wikipedia.org/wiki/Rice"
+
+- id: tomato
+  names: ["tomato", "tomatoes", "tomato paste", "tomato puree", "tomato powder"]
+  status: always_plant
+  reason: "Tomato is a plant fruit; not animal-derived."
+  source_url: "https://en.wikipedia.org/wiki/Tomato"
