@@ -1,66 +1,95 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { detectScannerBackend, useBarcodeScanner } from '../scan/useBarcodeScanner.ts'
 import type { ScannerBackend } from '../scan/useBarcodeScanner.ts'
-import { Button } from './Button.tsx'
-import { CameraIcon } from './icons.tsx'
 
 interface Props {
+  paused: boolean
+  lookingUp: boolean
+  lookupError: string | null
   onBarcode: (barcode: string) => void
   onBackendChange: (backend: ScannerBackend) => void
 }
 
-export function ScanView({ onBarcode, onBackendChange }: Props) {
+export function ScanView({ paused, lookingUp, lookupError, onBarcode, onBackendChange }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null)
-  const { backend, error, scanning, start, stop } = useBarcodeScanner()
+  const onBarcodeRef = useRef(onBarcode)
+  const { error, scanning, start, stop } = useBarcodeScanner()
 
-  const handleStart = async () => {
+  useEffect(() => {
+    onBarcodeRef.current = onBarcode
+  }, [onBarcode])
+
+  useEffect(() => {
+    if (paused) {
+      stop()
+      return
+    }
     const video = videoRef.current
     if (!video) return
     onBackendChange(detectScannerBackend())
-    await start(video, onBarcode)
+    void start(video, (code) => {
+      stop()
+      onBarcodeRef.current(code)
+    })
+    return () => stop()
+  }, [paused, start, stop, onBackendChange])
+
+  const handleShutter = () => {
+    if (scanning) {
+      stop()
+      return
+    }
+    const video = videoRef.current
+    if (!video) return
+    onBackendChange(detectScannerBackend())
+    void start(video, (code) => {
+      stop()
+      onBarcodeRef.current(code)
+    })
   }
 
+  const hint = lookupError
+    ? lookupError
+    : error
+      ? error
+      : scanning
+        ? 'Align the barcode inside the frame'
+        : 'Tap the shutter to start the camera'
+
   return (
-    <section aria-label="Barcode scanner">
-      <div className="mb-2 flex items-end justify-between px-5">
-        <p className="apple-section-label !px-0 !pb-0">Scan</p>
-        <p className="apple-caption font-mono">{backend}</p>
+    <section className="ic-stage" aria-label="Barcode scanner">
+      <video ref={videoRef} muted playsInline />
+      <div className="ic-vignette" aria-hidden="true" />
+      <div className="ic-finder" aria-hidden="true">
+        <span className="ic-corner ic-corner-tl" />
+        <span className="ic-corner ic-corner-tr" />
+        <span className="ic-corner ic-corner-bl" />
+        <span className="ic-corner ic-corner-br" />
+        {scanning && !lookingUp && <span className="ic-scanline" />}
       </div>
-      <div className="apple-group overflow-hidden">
-        <div className="relative bg-black">
-          <video
-            ref={videoRef}
-            muted
-            playsInline
-            className="aspect-[4/3] w-full object-cover"
-          />
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 flex items-center justify-center"
-          >
-            <div className="h-[88px] w-[148px] rounded-[12px] border-2 border-white/80" />
+
+      {lookingUp && (
+        <div className="ic-overlay" role="status">
+          <div>
+            <div className="ic-spinner" aria-hidden="true" />
+            <p>Looking up this product…</p>
           </div>
         </div>
-        <div className="apple-group-pad space-y-3">
-          <p className="apple-caption">
-            Point the camera at a UK packaged-food barcode.
-          </p>
-          {error && (
-            <p role="alert" className="text-[15px] text-[color:var(--apple-red)]">
-              {error}
-            </p>
-          )}
-          {scanning ? (
-            <Button variant="secondary" onClick={stop}>
-              Stop Camera
-            </Button>
-          ) : (
-            <Button onClick={() => void handleStart()}>
-              <CameraIcon color="#fff" />
-              Start Camera
-            </Button>
-          )}
-        </div>
+      )}
+
+      <div className="ic-chrome-bottom">
+        <p className={`ic-hint${lookupError || error ? ' ic-hint-error' : ''}`} role={lookupError || error ? 'alert' : undefined}>
+          {hint}
+        </p>
+        <button
+          type="button"
+          className="ic-shutter"
+          aria-label={scanning ? 'Stop camera' : 'Start camera'}
+          aria-pressed={scanning}
+          onClick={handleShutter}
+        >
+          <span className="ic-shutter-inner" />
+        </button>
       </div>
     </section>
   )
