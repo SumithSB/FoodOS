@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { saveReply } from '../data/replies.ts'
 import type { ReplySource } from '../data/replies.ts'
 import type { ReasonLink } from '../engine/types.ts'
+import { Button } from './Button.tsx'
+import { CopyIcon } from './icons.tsx'
 
 interface Props {
   brand: string | null
@@ -30,12 +32,23 @@ function ReplyRow({ brand, ruleId, ruleName, onSaved }: RowProps) {
   const [source, setSource] = useState<ReplySource>('unclear')
   const [note, setNote] = useState('')
   const [done, setDone] = useState(false)
+  const [copied, setCopied] = useState(false)
+  const draft = draftText(brand, ruleName)
 
   const handleSave = async () => {
     if (!brand) return
     await saveReply({ brand, ingredientId: ruleId, resolution: source, note })
     setDone(true)
     onSaved()
+  }
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(draft)
+      setCopied(true)
+    } catch {
+      setCopied(false)
+    }
   }
 
   const options: Array<{ value: ReplySource; label: string }> = [
@@ -45,38 +58,54 @@ function ReplyRow({ brand, ruleId, ruleName, onSaved }: RowProps) {
   ]
 
   return (
-    <li className="rounded border border-gray-200 p-2">
-      <pre className="whitespace-pre-wrap text-sm text-gray-800">
-        {draftText(brand, ruleName)}
-      </pre>
-      <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
-        {options.map((opt) => (
-          <label key={opt.value} className="flex items-center gap-1">
-            <input
-              type="radio"
-              name={`source-${ruleId}`}
-              checked={source === opt.value}
-              onChange={() => setSource(opt.value)}
-            />
-            {opt.label}
-          </label>
-        ))}
+    <li className="space-y-3 rounded-lg border border-border p-3">
+      <pre className="whitespace-pre-wrap font-sans text-sm text-card-foreground">{draft}</pre>
+      <Button variant="secondary" onClick={() => void handleCopy()}>
+        <CopyIcon />
+        {copied ? 'Copied' : 'Copy enquiry'}
+      </Button>
+      <fieldset className="space-y-2">
+        <legend className="text-sm font-semibold text-card-foreground">
+          Manufacturer reply for {ruleName ?? ruleId}
+        </legend>
+        <div className="flex flex-wrap gap-2">
+          {options.map((opt) => (
+            <label
+              key={opt.value}
+              className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border border-border px-3 text-sm"
+            >
+              <input
+                type="radio"
+                name={`source-${ruleId}`}
+                checked={source === opt.value}
+                onChange={() => setSource(opt.value)}
+              />
+              {opt.label}
+            </label>
+          ))}
+        </div>
+      </fieldset>
+      <div className="space-y-1">
+        <label htmlFor={`note-${ruleId}`} className="text-sm font-semibold">
+          Reply note
+        </label>
         <input
+          id={`note-${ruleId}`}
           type="text"
-          placeholder="Reply note (optional)"
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          className="min-w-0 flex-1 rounded border border-gray-300 px-2 py-1"
+          className="min-h-11 w-full rounded-lg border border-border bg-card px-3 text-sm"
         />
-        <button
-          type="button"
-          disabled={!brand}
-          onClick={() => void handleSave()}
-          className="rounded bg-gray-900 px-3 py-1 text-white disabled:opacity-50"
-        >
+      </div>
+      <div className="flex flex-wrap items-center gap-2">
+        <Button disabled={!brand} onClick={() => void handleSave()}>
           Save reply
-        </button>
-        {done && <span className="text-xs text-green-700">Saved — verdict updated.</span>}
+        </Button>
+        {done && (
+          <span role="status" className="text-sm text-accent">
+            Saved — verdict updated.
+          </span>
+        )}
       </div>
     </li>
   )
@@ -89,19 +118,24 @@ export function EnquiryDraft({ brand, undeterminedRules, onSaved }: Props) {
   if (withRule.length === 0) return null
 
   return (
-    <section aria-label="Manufacturer enquiries" className="rounded-lg border border-gray-300 p-4">
-      <h2 className="text-base font-semibold text-gray-900">Ask the manufacturer</h2>
-      <p className="mt-1 text-sm text-gray-600">
+    <section
+      aria-label="Manufacturer enquiries"
+      className="space-y-3 rounded-xl border border-border bg-card p-4 shadow-sm"
+    >
+      <h2 className="font-heading text-base font-semibold text-card-foreground">
+        Ask the manufacturer
+      </h2>
+      <p className="text-sm text-muted-foreground">
         For undetermined ingredients, send an enquiry naming the specific
         ingredient. Replies are stored locally under brand + ingredient and
         checked before the next verdict.
       </p>
       {!brand && (
-        <p className="mt-2 text-sm text-amber-800">
+        <p role="status" className="text-sm text-caution">
           No brand is known for this product, so replies cannot be stored yet.
         </p>
       )}
-      <ul className="mt-2 space-y-3">
+      <ul className="space-y-3">
         {withRule.map((reason) => (
           <ReplyRow
             key={reason.ruleId ?? reason.token}

@@ -1,4 +1,5 @@
 import type { ProfileRule } from '../engine/types.ts'
+import { WarningCircleIcon } from './icons.tsx'
 
 interface Props {
   profiles: ProfileRule[]
@@ -9,34 +10,39 @@ interface Props {
 export function ProfilePicker({ profiles, value, onChange }: Props) {
   const selected = profiles.find((p) => p.id === value)
   return (
-    <section aria-label="Dietary profile" className="rounded-lg border border-gray-300 p-4">
-      <label htmlFor="profile" className="block text-sm font-semibold text-gray-900">
+    <section aria-label="Dietary profile" className="space-y-3">
+      <label htmlFor="profile" className="block text-sm font-semibold text-foreground">
         Dietary profile
       </label>
       <select
         id="profile"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-2 w-full rounded border border-gray-300 bg-white p-2 text-base"
+        className="min-h-11 w-full cursor-pointer rounded-lg border border-border bg-card px-3 text-base text-card-foreground focus-visible:ring-2 focus-visible:ring-ring"
       >
         {profiles.map((p) => (
           <option key={p.id} value={p.id}>
             {p.label}
-            {p.validated ? '' : ' (unvalidated)'}
+            {p.validated ? '' : ' — unvalidated'}
           </option>
         ))}
       </select>
       {selected && !selected.validated && (
         <p
           role="alert"
-          className="mt-2 rounded border border-amber-500 bg-amber-50 p-2 text-sm text-amber-900"
+          className="flex gap-2 rounded-lg border border-caution/40 bg-caution-bg p-3 text-sm text-caution"
         >
-          Unvalidated profile: “{selected.label}” has not been validated. Results
-          under this profile are experimental — only Strict Indian vegetarian is
-          validated.
+          <WarningCircleIcon className="mt-0.5 shrink-0" />
+          <span>
+            Unvalidated profile: “{selected.label}” has not been validated. Results
+            under this profile are experimental — only Strict Indian vegetarian is
+            validated.
+          </span>
         </p>
       )}
-      {selected?.note && <p className="mt-2 text-xs text-gray-600">{selected.note}</p>}
+      {selected?.note && (
+        <p className="text-sm text-muted-foreground">{selected.note}</p>
+      )}
     </section>
   )
 }

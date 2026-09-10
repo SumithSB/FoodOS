@@ -1,6 +1,8 @@
 import { useRef } from 'react'
 import { detectScannerBackend, useBarcodeScanner } from '../scan/useBarcodeScanner.ts'
 import type { ScannerBackend } from '../scan/useBarcodeScanner.ts'
+import { Button } from './Button.tsx'
+import { CameraIcon } from './icons.tsx'
 
 interface Props {
   onBarcode: (barcode: string) => void
@@ -19,42 +21,52 @@ export function ScanView({ onBarcode, onBackendChange }: Props) {
   }
 
   return (
-    <section aria-label="Barcode scanner" className="rounded-lg border border-gray-300 p-4">
-      <h2 className="text-base font-semibold text-gray-900">Scan a barcode</h2>
-      <p className="mt-1 text-sm text-gray-600">
-        Point the camera at a UK packaged-food barcode. Backend:{' '}
-        <code className="rounded bg-gray-100 px-1">{backend}</code>
-      </p>
-      <video
-        ref={videoRef}
-        muted
-        playsInline
-        className="mt-2 aspect-[4/3] w-full rounded bg-black object-cover"
-      />
+    <section
+      aria-label="Barcode scanner"
+      className="space-y-3 rounded-xl border border-border bg-card p-4 shadow-sm"
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h2 className="font-heading text-base font-semibold text-card-foreground">
+            Scan a barcode
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Point the camera at a UK packaged-food barcode.
+          </p>
+        </div>
+        <p className="shrink-0 rounded-full border border-border bg-muted px-2 py-1 font-mono text-xs text-muted-foreground">
+          backend {backend}
+        </p>
+      </div>
+      <div className="relative overflow-hidden rounded-lg bg-foreground">
+        <video
+          ref={videoRef}
+          muted
+          playsInline
+          className="aspect-[4/3] w-full object-cover"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 flex items-center justify-center"
+        >
+          <div className="h-24 w-40 rounded border-2 border-accent/80" />
+        </div>
+      </div>
       {error && (
-        <p role="alert" className="mt-2 text-sm text-red-700">
+        <p role="alert" className="text-sm text-destructive">
           {error}
         </p>
       )}
-      <div className="mt-2 flex gap-2">
-        {!scanning ? (
-          <button
-            type="button"
-            onClick={() => void handleStart()}
-            className="rounded bg-gray-900 px-4 py-2 text-white"
-          >
-            Start camera
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={stop}
-            className="rounded border border-gray-400 px-4 py-2"
-          >
-            Stop camera
-          </button>
-        )}
-      </div>
+      {scanning ? (
+        <Button variant="secondary" onClick={stop} className="w-full sm:w-auto">
+          Stop camera
+        </Button>
+      ) : (
+        <Button onClick={() => void handleStart()} className="w-full sm:w-auto">
+          <CameraIcon />
+          Start camera
+        </Button>
+      )}
     </section>
   )
 }
