@@ -7,21 +7,21 @@ import { getProfile, loadIngredientRules, loadProfiles } from './engine/loadRule
 import { normaliseToken, parseIngredientList } from './engine/parser.ts'
 import { resolveToken } from './resolver/resolve.ts'
 import { useAppStore } from './store.ts'
-import { Button } from './ui/Button.tsx'
 import { EnquiryDraft } from './ui/EnquiryDraft.tsx'
-import { BarcodeIcon, ClipboardIcon } from './ui/icons.tsx'
-import { ProfilePicker } from './ui/ProfilePicker.tsx'
+import { KeyboardIcon } from './ui/icons.tsx'
+import { ProfilePill, ProfileSheet } from './ui/ProfilePicker.tsx'
 import { ScanView } from './ui/ScanView.tsx'
-import { SegmentedControl } from './ui/SegmentedControl.tsx'
-import { VerdictView } from './ui/VerdictView.tsx'
+import { TypeSheet } from './ui/TypeSheet.tsx'
+import { VerdictSheet } from './ui/VerdictView.tsx'
 
 const RULES = loadIngredientRules()
 const PROFILES = loadProfiles()
 
+type SheetId = 'none' | 'type' | 'profile'
+
 export default function App() {
   const s = useAppStore()
-  const [pasted, setPasted] = useState('')
-  const [mode, setMode] = useState<'scan' | 'type'>('scan')
+  const [sheet, setSheet] = useState<SheetId>('none')
 
   const profile = useMemo(() => getProfile(PROFILES, s.profileId), [s.profileId])
   const hasInput = s.product !== null || s.ingredientText.trim().length > 0
@@ -59,6 +59,7 @@ export default function App() {
         s.setProduct(cached)
         s.setIngredientText(cached.ingredientsText ?? '')
         s.setLookup('done')
+        setSheet('none')
         return
       }
       const product = await fetchProduct(code)
@@ -70,6 +71,7 @@ export default function App() {
       s.setProduct(product)
       s.setIngredientText(product.ingredientsText ?? '')
       s.setLookup('done')
+      setSheet('none')
     } catch (err) {
       s.setLookup('error', err instanceof Error ? err.message : 'Lookup failed.')
     }
@@ -86,122 +88,77 @@ export default function App() {
     }
   }
 
+  const closeResult = () => {
+    s.resetResult()
+    setSheet('none')
+  }
+
+  const sheetOpen = sheet !== 'none' || verdict !== null
+  const selectedLabel = profile.label
+
   return (
-    <div className="mx-auto min-h-svh max-w-[430px] pb-[max(2rem,env(safe-area-inset-bottom))]">
-      <header className="apple-nav">
-        <p className="apple-caption">Ingredient Check</p>
-        <h1>Check</h1>
-        <p className="apple-caption mt-1 max-w-prose">
-          Scan a UK barcode. When in doubt the answer is undetermined.
-        </p>
-        <div className="mt-3">
-          <SegmentedControl
-            ariaLabel="Input method"
-            value={mode}
-            onChange={(id) => setMode(id as 'scan' | 'type')}
-            options={[
-              { id: 'scan', label: 'Scan' },
-              { id: 'type', label: 'Type' },
-            ]}
-          />
-        </div>
+    <div className={`ic-app${sheetOpen ? ' ic-app-sheet' : ''}`}>
+      <ScanView
+        paused={sheetOpen}
+        lookingUp={s.lookupState === 'loading'}
+        lookupError={verdict ? null : s.lookupError}
+        onBarcode={(code) => void lookup(code)}
+        onBackendChange={s.setScannerBackend}
+      />
+
+      <header className="ic-chrome-top">
+        <ProfilePill label={selectedLabel} onClick={() => setSheet('profile')} />
+        <button
+          type="button"
+          className="ic-icon-btn"
+          aria-label="Type a barcode or ingredient list"
+          onClick={() => setSheet('type')}
+        >
+          <KeyboardIcon size={20} weight="bold" />
+        </button>
       </header>
 
-      <main className="space-y-6 px-4 pt-4">
-        <ProfilePicker profiles={PROFILES} value={s.profileId} onChange={s.setProfileId} />
+      <ProfileSheet
+        open={sheet === 'profile'}
+        profiles={PROFILES}
+        value={s.profileId}
+        onChange={s.setProfileId}
+        onClose={() => setSheet('none')}
+      />
 
-        <VerdictView
-          verdict={verdict}
-          product={s.product}
-          resolving={s.resolving}
-          onResolve={(token) => void handleResolve(token)}
-        />
+      <TypeSheet
+        open={sheet === 'type'}
+        barcode={s.barcodeInput}
+        lookupState={s.lookupState}
+        lookupError={s.lookupError}
+        onBarcodeChange={s.setBarcodeInput}
+        onLookup={(code) => void lookup(code)}
+        onCheckList={(text) => {
+          s.resetResult()
+          s.setIngredientText(text)
+          setSheet('none')
+        }}
+        onClose={() => setSheet('none')}
+      />
 
-        {mode === 'scan' ? (
-          <ScanView onBarcode={(code) => void lookup(code)} onBackendChange={s.setScannerBackend} />
-        ) : (
-          <section aria-label="Manual entry">
-            <p className="apple-section-label">Type</p>
-            <div className="apple-group">
-              <form
-                className="apple-group-pad space-y-3"
-                onSubmit={(e) => {
-                  e.preventDefault()
-                  void lookup(s.barcodeInput)
-                }}
-              >
-                <label htmlFor="barcode" className="apple-caption block">
-                  Barcode
-                </label>
-                <input
-                  id="barcode"
-                  type="text"
-                  inputMode="numeric"
-                  autoComplete="off"
-                  placeholder="5000168001142"
-                  value={s.barcodeInput}
-                  onChange={(e) => s.setBarcodeInput(e.target.value)}
-                  className="apple-field apple-field-mono"
-                />
-                <Button type="submit" disabled={s.lookupState === 'loading'}>
-                  <BarcodeIcon color="#fff" />
-                  {s.lookupState === 'loading' ? 'Looking Up…' : 'Look Up'}
-                </Button>
-                <label htmlFor="paste" className="apple-caption block">
-                  Ingredient list
-                </label>
-                <textarea
-                  id="paste"
-                  rows={4}
-                  value={pasted}
-                  onChange={(e) => setPasted(e.target.value)}
-                  placeholder="Ingredients: wheat flour, water, salt…"
-                  className="apple-field min-h-[96px]"
-                />
-                <Button
-                  variant="secondary"
-                  onClick={() => {
-                    s.resetResult()
-                    s.setIngredientText(pasted)
-                  }}
-                >
-                  <ClipboardIcon />
-                  Check List
-                </Button>
-                {(s.product || s.ingredientText) && (
-                  <Button
-                    variant="ghost"
-                    onClick={() => {
-                      s.resetResult()
-                      setPasted('')
-                    }}
-                  >
-                    Clear
-                  </Button>
-                )}
-                {s.lookupState === 'error' && (
-                  <p role="alert" className="text-[15px] text-[color:var(--apple-red)]">
-                    {s.lookupError}
-                  </p>
-                )}
-              </form>
-            </div>
-          </section>
-        )}
-
+      <VerdictSheet
+        open={verdict !== null}
+        verdict={verdict}
+        product={s.product}
+        resolving={s.resolving}
+        onResolve={(token) => void handleResolve(token)}
+        onClose={closeResult}
+      >
         {verdict && verdict.kind === 'UNDETERMINED' && (
-          <EnquiryDraft
-            brand={s.product?.brand ?? null}
-            undeterminedRules={verdict.reasons}
-            onSaved={s.bumpReplies}
-          />
+          <div className="mt-6">
+            <EnquiryDraft
+              brand={s.product?.brand ?? null}
+              undeterminedRules={verdict.reasons}
+              onSaved={s.bumpReplies}
+            />
+          </div>
         )}
-
-        <p className="apple-caption px-1 font-mono">
-          scanner={s.scannerBackend} lookup={s.lookupState} rules={RULES.length} profiles=
-          {PROFILES.length}
-        </p>
-      </main>
+      </VerdictSheet>
     </div>
   )
 }

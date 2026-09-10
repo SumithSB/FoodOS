@@ -1,47 +1,70 @@
 import type { ProfileRule } from '../engine/types.ts'
-import { WarningCircleIcon } from './icons.tsx'
+import { CaretDownIcon, CheckIcon, LeafIcon, WarningCircleIcon } from './icons.tsx'
+import { Sheet } from './Sheet.tsx'
 
-interface Props {
+interface PillProps {
+  label: string
+  onClick: () => void
+}
+
+export function ProfilePill({ label, onClick }: PillProps) {
+  return (
+    <button type="button" className="ic-pill" onClick={onClick} aria-haspopup="dialog">
+      <LeafIcon size={16} weight="fill" />
+      <span className="ic-pill-label">{label}</span>
+      <CaretDownIcon size={12} weight="bold" />
+    </button>
+  )
+}
+
+interface SheetProps {
+  open: boolean
   profiles: ProfileRule[]
   value: string
   onChange: (id: string) => void
+  onClose: () => void
 }
 
-export function ProfilePicker({ profiles, value, onChange }: Props) {
+export function ProfileSheet({ open, profiles, value, onChange, onClose }: SheetProps) {
   const selected = profiles.find((p) => p.id === value)
+
   return (
-    <section aria-label="Dietary profile">
-      <p className="apple-section-label">Profile</p>
-      <div className="apple-group">
-        <div className="apple-row">
-          <label htmlFor="profile" className="text-[17px] font-normal">
-            Dietary profile
-          </label>
-          <select
-            id="profile"
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            className="min-h-11 max-w-[58%] cursor-pointer border-0 bg-transparent text-right text-[17px] text-[color:var(--apple-secondary-label)]"
-          >
-            {profiles.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.label}
-                {p.validated ? '' : ' (unvalidated)'}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
+    <Sheet open={open} title="Dietary profile" onClose={onClose}>
       {selected && !selected.validated && (
-        <p role="alert" className="apple-alert mx-1 mt-3">
+        <p role="alert" className="apple-alert mb-3">
           <WarningCircleIcon className="mt-0.5 shrink-0" color="var(--apple-orange)" />
           <span>
-            Unvalidated profile. Results under “{selected.label}” are experimental —
-            only Strict Indian vegetarian is validated.
+            Results under “{selected.label}” are experimental — only Strict Indian vegetarian is
+            validated.
           </span>
         </p>
       )}
-      {selected?.note && <p className="apple-caption mt-2 px-5">{selected.note}</p>}
-    </section>
+      <div role="listbox" aria-label="Dietary profile">
+        {profiles.map((profile) => {
+          const selectedRow = profile.id === value
+          return (
+            <button
+              key={profile.id}
+              type="button"
+              role="option"
+              aria-selected={selectedRow}
+              className="ic-profile-row"
+              onClick={() => onChange(profile.id)}
+            >
+              <span>
+                <span className="block text-[17px] font-semibold tracking-[-0.012em]">
+                  {profile.label}
+                </span>
+                <span className="apple-caption mt-0.5 block">
+                  {profile.validated ? 'Validated' : 'Unvalidated — experimental'}
+                </span>
+              </span>
+              {selectedRow && <CheckIcon size={20} weight="bold" color="var(--apple-blue)" />}
+            </button>
+          )
+        })}
+      </div>
+      {selected?.note && <p className="apple-caption mt-3">{selected.note}</p>}
+    </Sheet>
   )
 }
