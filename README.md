@@ -14,18 +14,23 @@ Allergens declared by the manufacturer are shown verbatim. They stay out of the 
 
 ## Where the code is
 
-This branch holds the repository introduction. The engine, scanner, tests, and interface are on the open pull requests:
+`main` holds this introduction. The engine, scanner, tests, and interface are on the open pull requests:
 
-- [Build ingredient-check PWA](https://github.com/SumithSB/FoodOS/pull/1) covers the engine, scanner, resolver, and eval harness.
-- [Camera-first scanner UI](https://github.com/SumithSB/FoodOS/pull/2) restyles the scanner. Its base is the branch from the pull request above.
+- [Build ingredient-check PWA](https://github.com/SumithSB/FoodOS/pull/1) is `cursor/ingredient-check-pwa-579a`. It covers the engine, scanner, resolver, and eval harness.
+- [Camera-first scanner UI](https://github.com/SumithSB/FoodOS/pull/2) is `cursor/camera-first-ui-579a`. It restyles the scanner. Its base is the branch above, so it is the checkout that has the current interface and the engine.
 
-That tree expects Node 22. From a checkout of the pull request branch:
+That tree expects Node 22. CI there installs from the lockfile, then typechecks, tests, builds, and runs the eval harness:
 
 ```sh
-npm install
-npm test
+git fetch origin cursor/camera-first-ui-579a
+git switch cursor/camera-first-ui-579a
+npm ci
 npm run typecheck
-npm run dev
+npm test
+npm run build
+npm run eval
 ```
 
-`npm run dev` serves HTTPS on the LAN address so a phone can open the camera. `npm run eval` exits with status 1 when any labelled fixture is marked safe incorrectly.
+`npm run dev` is `vite --host` with a self-signed certificate. It serves `https://<lan-ip>:5173` so a phone on the same network can open the camera.
+
+`npm run eval` grades only `strict_indian_vegetarian`. A fixture with `expected: null` is counted as unlabelled and is not scored. The process exits 1 only when a labelled fixture is classified `SAFE` and the label is something else. Any other mismatch is printed and the process still exits 0. The five checked-in fixtures are placeholders, so a green eval does not mean a product was checked.
