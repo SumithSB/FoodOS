@@ -294,10 +294,16 @@
   source_url: "https://en.wikipedia.org/wiki/Powdered_milk"
 
 - id: cream
-  names: ["cream", "double cream", "single cream", "whipping cream", "soured cream", "sour cream"]
+  names: ["cream", "double cream", "single cream", "whipping cream"]
   status: dairy
   reason: "Cream is dairy."
   source_url: "https://en.wikipedia.org/wiki/Cream"
+
+- id: sour_cream
+  names: ["sour cream", "soured cream"]
+  status: fermented_dairy
+  reason: "Sour cream is cream fermented with lactic cultures."
+  source_url: "https://en.wikipedia.org/wiki/Sour_cream"
 
 - id: butter
   names: ["butter", "butteroil", "butter oil"]
