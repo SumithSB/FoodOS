@@ -2,12 +2,17 @@ import type { IconProps } from '@phosphor-icons/react'
 import {
   Barcode,
   Camera,
+  CaretDown,
+  Check,
   CheckCircle,
   ClipboardText,
   Copy,
+  Keyboard,
+  Leaf,
   MagnifyingGlass,
   Warning,
   WarningCircle,
+  X,
   XCircle,
 } from '@phosphor-icons/react'
 
@@ -28,3 +33,8 @@ export const WarningCircleIcon = (props: IconProps) => (
 export const ClipboardIcon = (props: IconProps) => <ClipboardText {...defaultProps} {...props} />
 export const CopyIcon = (props: IconProps) => <Copy {...defaultProps} {...props} />
 export const SearchIcon = (props: IconProps) => <MagnifyingGlass {...defaultProps} {...props} />
+export const KeyboardIcon = (props: IconProps) => <Keyboard {...defaultProps} {...props} />
+export const CaretDownIcon = (props: IconProps) => <CaretDown {...defaultProps} {...props} />
+export const CheckIcon = (props: IconProps) => <Check {...defaultProps} {...props} />
+export const CloseIcon = (props: IconProps) => <X {...defaultProps} {...props} />
+export const LeafIcon = (props: IconProps) => <Leaf {...defaultProps} {...props} />

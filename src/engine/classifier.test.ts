@@ -47,7 +47,7 @@ describe('knowledge base integrity', () => {
       'vitamin_d3', 'omega_3', 'rennet', 'cheese',
       'albumen', 'ovalbumin', 'lysozyme', 'egg_lecithin',
       'yoghurt', 'curd', 'dahi', 'buttermilk', 'kefir',
-      'milk', 'cream', 'butter', 'ghee', 'whey', 'casein', 'lactose', 'milk_powder',
+      'milk', 'cream', 'sour_cream', 'butter', 'ghee', 'whey', 'casein', 'lactose', 'milk_powder',
       'onion', 'garlic', 'shallot', 'leek', 'asafoetida',
       'potato', 'carrot', 'beetroot', 'ginger', 'turmeric',
     ]) {
@@ -75,6 +75,8 @@ describe('strict_indian_vegetarian (the validated profile)', () => {
     expect(classifyIngredientList('whole egg', siv(), rules).kind).toBe('NOT_SAFE')
     expect(classifyIngredientList('lysozyme', siv(), rules).kind).toBe('NOT_SAFE')
     expect(classifyIngredientList('yoghurt', siv(), rules).kind).toBe('NOT_SAFE')
+    expect(classifyIngredientList('sour cream', siv(), rules).kind).toBe('NOT_SAFE')
+    expect(classifyIngredientList('soured cream', siv(), rules).kind).toBe('NOT_SAFE')
   })
 
   it('holds ambiguous items as undetermined, including unspecified rennet and cheese', () => {
@@ -87,6 +89,7 @@ describe('strict_indian_vegetarian (the validated profile)', () => {
 
   it('allows plain dairy and known plant staples', () => {
     expect(classifyIngredientList('milk, butter, ghee', siv(), rules).kind).toBe('SAFE')
+    expect(classifyIngredientList('double cream', siv(), rules).kind).toBe('SAFE')
     expect(classifyIngredientList('wheat flour, water, salt', siv(), rules).kind).toBe('SAFE')
   })
 

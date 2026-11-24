@@ -61,7 +61,7 @@ function ReplyRow({
   ]
 
   return (
-    <li className="apple-group-pad space-y-3">
+    <li className="ic-reason space-y-3">
       <pre className="whitespace-pre-wrap font-[var(--apple-font-sans)] text-[15px] leading-5">
         {draft}
       </pre>
@@ -116,31 +116,27 @@ export function EnquiryDraft({ brand, undeterminedRules, onSaved }: Props) {
   return (
     <section aria-label="Manufacturer enquiries">
       <p className="apple-section-label">Manufacturer</p>
-      <div className="apple-group">
-        <div className="apple-group-pad">
-          <p className="apple-caption">
-            For undetermined ingredients, send an enquiry naming the specific ingredient.
-            Replies are stored locally under brand + ingredient.
-          </p>
-        </div>
-        {!brand && (
-          <p role="status" className="apple-alert mx-4 mb-4">
-            <WarningCircleIcon className="mt-0.5 shrink-0" color="var(--apple-orange)" />
-            <span>No brand is known, so replies cannot be stored yet.</span>
-          </p>
-        )}
-        <ul>
-          {withRule.map((reason) => (
-            <ReplyRow
-              key={reason.ruleId ?? reason.token}
-              brand={brand}
-              ruleId={reason.ruleId ?? ''}
-              ruleName={reason.ruleName}
-              onSaved={onSaved}
-            />
-          ))}
-        </ul>
-      </div>
+      <p className="apple-caption mb-3">
+        For undetermined ingredients, send an enquiry naming the specific ingredient. Replies are
+        stored locally under brand + ingredient.
+      </p>
+      {!brand && (
+        <p role="status" className="apple-alert mb-4">
+          <WarningCircleIcon className="mt-0.5 shrink-0" color="var(--apple-orange)" />
+          <span>No brand is known, so replies cannot be stored yet.</span>
+        </p>
+      )}
+      <ul>
+        {withRule.map((reason) => (
+          <ReplyRow
+            key={reason.ruleId ?? reason.token}
+            brand={brand}
+            ruleId={reason.ruleId ?? ''}
+            ruleName={reason.ruleName}
+            onSaved={onSaved}
+          />
+        ))}
+      </ul>
     </section>
   )
 }
