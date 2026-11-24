@@ -8,7 +8,7 @@ The app is an installable PWA. It reads a barcode or a pasted ingredient list an
 
 The engine returns `SAFE`, `NOT_SAFE`, or `UNDETERMINED`. A false `SAFE` is the failure that must not happen. Unknown ingredients and ambiguous additives stay `UNDETERMINED`.
 
-`strict_indian_vegetarian` is the only validated profile. It allows plain dairy (milk, butter, and ghee). It rejects egg, fermented dairy, and ingredients that are always animal-derived, including named animal rennet. Unspecified cheese (including paneer) and unspecified rennet stay `UNDETERMINED`, because the coagulant is not on the label. Every other profile is unvalidated, and the interface marks it as such.
+`strict_indian_vegetarian` is the only validated profile. It allows plain dairy (milk, butter, ghee, and fresh cream). It rejects egg, fermented dairy (including sour cream and soured cream), and ingredients that are always animal-derived, including named animal rennet. Unspecified cheese (including paneer) and unspecified rennet stay `UNDETERMINED`, because the coagulant is not on the label. Every other profile is unvalidated, and the interface marks it as such.
 
 Allergens declared by the manufacturer are shown verbatim. They stay out of the verdict.
 
